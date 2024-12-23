@@ -47,6 +47,18 @@ export const run = async () => {
     const handleObject = loadHandles();
     const handles = handleObject.handles;
 
+    try {
+      const summaryMessage = await sendAccountPostSummary(
+        handles,
+        session,
+        accountPDS,
+        conversations,
+        proxyHeader
+      );
+    } catch (error) {
+      console.log("Error sending the daily stats message", error);
+    }
+
     //START COMMENT OUT FEATURE THAT IS NOT NEEDED FOR MVP
     // //get follows and followers
     // const followData = await getFollowersAndFollowingHandles(
@@ -69,19 +81,6 @@ export const run = async () => {
     //   difference
     // );
     //END COMMENT OUT FEATURE THAT IS NOT NEEDED FOR MVP
-
-    //GET main account posts for the today and compile the engagement to send as a separate messafe
-    try {
-      const summaryMessage = await sendAccountPostSummary(
-        handles,
-        session,
-        accountPDS,
-        conversations,
-        proxyHeader
-      );
-    } catch (error) {
-      console.log("Error sending the daily stats message", error);
-    }
   } catch (error) {
     console.log("Error sending message", error);
   }
