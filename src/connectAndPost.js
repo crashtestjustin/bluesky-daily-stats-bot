@@ -38,44 +38,45 @@ export const run = async () => {
       },
     });
     const data = await resp.json();
-    //get the chat where the participants are only ctj and jde.blue
-    const conversation = getPersonalBotConvo(data.convos);
-    //get the follower and following data for the main account
-    //Get the handle of the user to target followData queries
-    const targetUser = conversation.convo.members.filter(
-      (handle) => handle !== "crashtestjustin.bsky.social"
-    );
 
-    //create handle array for subsequent actions
-    const otherHandles = loadHandles();
-    const handles = [...otherHandles.handles, targetUser[0].handle];
+    // const conversation = getPersonalBotConvo(data.convos);
 
-    //get follows and followers
-    const followData = await getFollowersAndFollowingHandles(
-      accountPDS,
-      session.accessJwt,
-      handles
-    );
+    const conversations = data.convos;
 
-    // //get prior informatino from database (aka json file for now)
-    const difference = await compareFollowData(followData, handles);
-    // //send message summarizing changes to the same conversation id
-    const message = await sendUpdateMessage(
-      handles,
-      conversation.convo.id,
-      accountPDS,
-      proxyHeader,
-      session.accessJwt,
-      difference
-    );
+    //create handle array of users to investigate and DM for subsequent actions
+    const handleObject = loadHandles();
+    const handles = handleObject.handles;
+
+    //START COMMENT OUT FEATURE THAT IS NOT NEEDED FOR MVP
+    // //get follows and followers
+    // const followData = await getFollowersAndFollowingHandles(
+    //   accountPDS,
+    //   session.accessJwt,
+    //   handles
+    // );
+
+    // console.log(followData);
+
+    // // //get prior informatino from database (aka json file for now)
+    // const difference = await compareFollowData(followData, handles);
+    // // //send message summarizing changes to the same conversation id
+    // const message = await sendUpdateMessage(
+    //   handles,
+    //   conversation.convo.id,
+    //   accountPDS,
+    //   proxyHeader,
+    //   session.accessJwt,
+    //   difference
+    // );
+    //END COMMENT OUT FEATURE THAT IS NOT NEEDED FOR MVP
 
     //GET main account posts for the today and compile the engagement to send as a separate messafe
     try {
       const summaryMessage = await sendAccountPostSummary(
-        targetUser[0].handle,
+        handles,
         session,
         accountPDS,
-        conversation.convo.id,
+        conversations,
         proxyHeader
       );
     } catch (error) {
