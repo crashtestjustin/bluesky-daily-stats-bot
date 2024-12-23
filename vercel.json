@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/connectAndPost.js",
+      "use": "@vercel/node"
+    }
+  ]
+}

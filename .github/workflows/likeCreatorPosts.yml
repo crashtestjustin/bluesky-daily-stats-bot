@@ -1,0 +1,29 @@
+name: Liking Creator posts automation
+
+on:
+  schedule:
+    # Runs every 24 hours at 10am UTC for the liking function function
+    - cron: "0 10 * * *"
+  workflow_dispatch:
+
+jobs:
+  followBack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20" # Specify the Node.js version you're using
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run follow back script
+        run: node src/likeCreatorPosts.js
+        env:
+          BLUESKY_USERNAME: ${{ secrets.BLUESKY_USERNAME }}
+          BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
