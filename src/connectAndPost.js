@@ -12,7 +12,7 @@ import dotenv from "dotenv";
 import cron from "node-cron";
 import { authenticateAgent } from "./authenticating/authenticateAgent.js";
 import { createSession } from "./authenticating/createSession.js";
-import { getPersonalBotConvo } from "./matching and getting data/findMatchingConvo.js";
+import { getBotConvo } from "./matching and getting data/findMatchingConvo.js";
 import { compareFollowData } from "./matching and getting data/compareToPriorFollowData.js";
 import { getFollowersAndFollowingHandles } from "./data/getFollowerandFollowingHandles.js";
 import { sendUpdateMessage } from "./sendingMessage/sendSummary.js";
@@ -39,11 +39,13 @@ export const run = async () => {
     });
     const data = await resp.json();
 
-    // const conversation = getPersonalBotConvo(data.convos);
+    // const conversation = getBotConvo(data.convos);
 
     const conversations = data.convos;
+    // console.log(conversations);
 
     //create handle array of users to investigate and DM for subsequent actions
+    //This needs to become getting followers and creating a handle array from the followers
     const handleObject = loadHandles();
     const handles = handleObject.handles;
 
