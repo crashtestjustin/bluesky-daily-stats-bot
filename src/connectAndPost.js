@@ -18,6 +18,7 @@ import { getFollowersAndFollowingHandles } from "./data/getFollowerandFollowingH
 import { sendUpdateMessage } from "./sendingMessage/sendSummary.js";
 import { loadHandles } from "./data/readWriteHandles.js";
 import { sendAccountPostSummary } from "./sendingMessage/sendMainActPostSummary.js";
+import { getFollowers } from "./data/getBotActFollowers.js";
 
 dotenv.config();
 
@@ -39,15 +40,14 @@ export const run = async () => {
     });
     const data = await resp.json();
 
-    // const conversation = getBotConvo(data.convos);
-
     const conversations = data.convos;
-    // console.log(conversations);
 
     //create handle array of users to investigate and DM for subsequent actions
     //This needs to become getting followers and creating a handle array from the followers
-    const handleObject = loadHandles();
-    const handles = handleObject.handles;
+    const followers = await getFollowers(accountPDS, session);
+    // const handleObject = loadHandles();
+    // const handles = handleObject.handles;
+    const handles = followers;
 
     try {
       const summaryMessage = await sendAccountPostSummary(
