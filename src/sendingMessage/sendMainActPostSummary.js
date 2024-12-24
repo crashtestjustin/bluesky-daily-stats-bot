@@ -105,10 +105,10 @@ export async function sendAccountPostSummary(
     const participants = [handle, "crashtestjustin.bsky.social"];
     const conversation = await getBotConvo(conversations, handle);
     if (Object.keys(conversation).length > 0) {
-      // console.log("MATHCED COVNERSATION", conversation);
       const stats = engagementStats[handle];
       sendUpdateMessage(conversation.convo.id, stats, handle);
     } else {
+      //Need to create a handler that creates a new conversation to send
       console.log("No matched conversation found");
     }
     //pass the data back to the send message function
