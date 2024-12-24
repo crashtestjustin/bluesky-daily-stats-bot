@@ -43,7 +43,6 @@ export const run = async () => {
     const conversations = data.convos;
 
     //create handle array of users to investigate and DM for subsequent actions
-    //This needs to become getting followers and creating a handle array from the followers
     const followers = await getFollowers(accountPDS, session);
     // const handleObject = loadHandles();
     // const handles = handleObject.handles;
