@@ -6,8 +6,8 @@ function arraysMatchUnordered(arr1, arr2) {
     .every((value, index) => value === arr2.slice().sort()[index]);
 }
 
-export const getPersonalBotConvo = (convoData) => {
-  const targetParticipants = ["jde.blue", "crashtestjustin.bsky.social"];
+export const getBotConvo = (convoData, handle) => {
+  const targetParticipants = [handle, "crashtestjustin.bsky.social"];
 
   targetParticipants.sort();
 
