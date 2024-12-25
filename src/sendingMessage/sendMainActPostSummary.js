@@ -1,45 +1,45 @@
 import { fetchPosts } from "../data/getDailyPostStats.js";
-import { getBotConvo } from "../matching and getting data/findMatchingConvo.js";
 
 //function to get main post data for the day and send out a message that summarizes engagement
 export async function sendAccountPostSummary(
   handles,
   session,
   accountPDS,
-  conversations,
   proxyHeader
 ) {
   const engagementStats = {};
-  for (const handle of handles) {
-    //GET posts from past 24 hours as an array
-    const userPosts = await fetchPosts(
-      "app.bsky.feed.getAuthorFeed",
-      handle,
-      accountPDS,
-      session
-    );
-    // console.log(userPosts);
-    //total up the posts engagement - likes, reposts, replies, number of posts
+  for (const handle of Object.keys(handles)) {
+    if (handle === "mainAcct") {
+      continue;
+    } else {
+      //GET posts from past 24 hours as an array
+      const userPosts = await fetchPosts(
+        "app.bsky.feed.getAuthorFeed",
+        handle,
+        accountPDS,
+        session
+      );
+      //total up the posts engagement - likes, reposts, replies, number of posts
 
-    const stats = {
-      totalLike: 0,
-      totalReposts: 0,
-      totalReplies: 0,
-      totalReplyOthers: 0,
-      totalRepostOthers: 0,
-    };
+      const stats = {
+        totalLike: 0,
+        totalReposts: 0,
+        totalReplies: 0,
+        totalReplyOthers: 0,
+        totalRepostOthers: 0,
+      };
 
-    for (const post of userPosts) {
-      stats.totalLike += post.post.likeCount;
-      stats.totalReplies += post.post.replyCount;
-      stats.totalReposts += post.post.repostCount;
-      post.post.record.embed && (stats.totalRepostOthers += 1);
-      post.post.record.reply && (stats.totalReplyOthers += 1);
+      for (const post of userPosts) {
+        stats.totalLike += post.post.likeCount;
+        stats.totalReplies += post.post.replyCount;
+        stats.totalReposts += post.post.repostCount;
+        post.post.record.embed && (stats.totalRepostOthers += 1);
+        post.post.record.reply && (stats.totalReplyOthers += 1);
+      }
+
+      engagementStats[handle] = stats;
     }
-
-    engagementStats[handle] = stats;
   }
-  // console.log(engagementStats);
 
   const sendUpdateMessage = async (conversationId, stats, handle) => {
     const text = await messageText(stats, handle);
@@ -65,8 +65,7 @@ export async function sendAccountPostSummary(
 
       const respsonse = await resp.json();
       if (resp.ok) {
-        // console.log("message sent successfully", respsonse);
-        console.log("posts summary message sent successfully");
+        console.log("posts summary message sent successfully to " + handle);
       } else {
         console.log("issue sending messsage", respsonse);
       }
@@ -101,18 +100,15 @@ export async function sendAccountPostSummary(
 
   //send a message that summarizes the information by iterating throught the engagement stats object keys
   for (const handle of Object.keys(engagementStats)) {
-    //get conversation ID that matches the handle
-    const participants = [handle, "crashtestjustin.bsky.social"];
-    const conversation = await getBotConvo(conversations, handle);
-    if (Object.keys(conversation).length > 0) {
-      const stats = engagementStats[handle];
-      sendUpdateMessage(conversation.convo.id, stats, handle);
-    } else {
-      //Need to create a handler that creates a new conversation to send
-      console.log("No matched conversation found");
+    const stats = engagementStats[handle];
+
+    try {
+      sendUpdateMessage(handles[handle].convoWithBotAcct.id, stats, handle);
+    } catch (error) {
+      console.log(
+        "Error sending Update message for handle " + handle + ".",
+        error
+      );
     }
-    //pass the data back to the send message function
   }
-  //START TESTING COMMENT OUT HERE
-  //END TESTING COMMENT OUT HERE
 }
