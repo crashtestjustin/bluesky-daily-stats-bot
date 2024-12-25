@@ -1,3 +1,5 @@
+import { getConvoForMembers } from "./getConvoIDForMembers.js";
+
 export const getFollowers = async (accountPDS, session, actor) => {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -29,6 +31,7 @@ export const getFollowers = async (accountPDS, session, actor) => {
         }
 
         const data = await response.json();
+
         followers.push(data);
         cursor = data.cursor || null;
 
@@ -48,11 +51,28 @@ export const getFollowers = async (accountPDS, session, actor) => {
   );
 
   // console.log(followers[0].followers);
+  // console.log(followers);
 
-  const followerHandles = [];
+  const followerHandles = {
+    mainAcct: {
+      handle: followers[0].subject.handle,
+      did: followers[0].subject.did,
+    },
+  };
 
   for (const follower of followers[0].followers) {
-    followerHandles.push(follower.handle);
+    const convo = await getConvoForMembers(
+      accountPDS,
+      session,
+      follower.did,
+      followers[0].subject.did
+    );
+
+    followerHandles[follower.handle] = {
+      handle: follower.handle,
+      did: follower.did,
+      convoWithBotAcct: convo,
+    };
   }
 
   return followerHandles;
