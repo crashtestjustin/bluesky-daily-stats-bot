@@ -77,24 +77,24 @@ export async function sendAccountPostSummary(
   const messageText = (stats, handle) => {
     return `🙌 @${handle}, your personal post summary for today🙌\n\nEngagement with your content:\n\n${
       stats.totalLike > 0
-        ? `     • Total post likes for the day: ${stats.totalLike}`
-        : "     • No likes on posts today"
+        ? `    • Total post likes for the day: ${stats.totalLike}`
+        : "    • No likes on posts today"
     }\n${
       stats.totalReplies > 0
-        ? `     • Total post replies for the day: ${stats.totalReplies} `
-        : "     • No replies on posts today"
+        ? `    • Total post replies for the day: ${stats.totalReplies} `
+        : "    • No replies on posts today"
     }\n${
       stats.totalReposts > 0
-        ? `     • Total reposts for the day: ${stats.totalReposts}`
-        : "     • No reposts of your posts today"
-    }\n\nLet's not forget about how you engaged with others:\n\n${
+        ? `    • Total reposts for the day: ${stats.totalReposts}`
+        : "    • No reposts of your posts today"
+    }\n\nLet's not forget about how you engaged with others:\n${
       stats.totalReplyOthers > 0
-        ? `     • You replied to ${stats.totalReplyOthers} posts!`
-        : "     • You didn't reply to anyone's posts"
+        ? `    • You replied to ${stats.totalReplyOthers} posts!`
+        : "    • You didn't reply to anyone's posts"
     }\n${
       stats.totalRepostOthers > 0
-        ? `     • You reposted ${stats.totalRepostOthers} posts from other users!`
-        : "     • You didn't repost any content from other users"
+        ? `    • You reposted ${stats.totalRepostOthers} posts from other users!`
+        : "    • You didn't repost anyone's posts"
     }`;
   };
 
