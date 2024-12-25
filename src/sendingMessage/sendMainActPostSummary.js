@@ -8,8 +8,13 @@ export async function sendAccountPostSummary(
   proxyHeader
 ) {
   const engagementStats = {};
+  const skipHandles = [
+    "mainAcct",
+    "xmascountdown.bsky.social",
+    "theyearprogress.bsky.social",
+  ];
   for (const handle of Object.keys(handles)) {
-    if (handle === "mainAcct") {
+    if (skipHandles.includes(handle)) {
       continue;
     } else {
       //GET posts from past 24 hours as an array
