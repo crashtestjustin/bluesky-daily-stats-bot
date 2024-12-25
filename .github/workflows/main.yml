@@ -1,4 +1,4 @@
-name: Daily Followers Updates
+name: Daily Post Stats Updates
 
 on:
   schedule:
