@@ -9,14 +9,10 @@ globalThis.Response = Response;
 globalThis.Request = Request;
 
 import dotenv from "dotenv";
-import cron from "node-cron";
-import { authenticateAgent } from "./authenticating/authenticateAgent.js";
 import { createSession } from "./authenticating/createSession.js";
-import { getBotConvo } from "./matching and getting data/findMatchingConvo.js";
 import { compareFollowData } from "./matching and getting data/compareToPriorFollowData.js";
 import { getFollowersAndFollowingHandles } from "./data/getFollowerandFollowingHandles.js";
 import { sendUpdateMessage } from "./sendingMessage/sendSummary.js";
-import { loadHandles } from "./data/readWriteHandles.js";
 import { sendAccountPostSummary } from "./sendingMessage/sendMainActPostSummary.js";
 import { getFollowers } from "./data/getBotActFollowers.js";
 
@@ -25,27 +21,11 @@ dotenv.config();
 export const run = async () => {
   const session = await createSession();
   const accountPDS = session.service[0].serviceEndpoint;
-  const listConvosUrl = "chat.bsky.convo.listConvos";
   const proxyHeader = "did:web:api.bsky.chat#bsky_chat";
 
   try {
-    //get conversations in chat for bot account
-    const resp = await fetch(`${accountPDS}/xrpc/${listConvosUrl}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${session.accessJwt}`,
-        "Atproto-Proxy": "did:web:api.bsky.chat#bsky_chat",
-      },
-    });
-    const data = await resp.json();
-
-    const conversations = data.convos;
-
-    //create handle array of users to investigate and DM for subsequent actions
+    //create handle object of followers w/ handle, did, and convoID DM in subsequent actions
     const followers = await getFollowers(accountPDS, session);
-    // const handleObject = loadHandles();
-    // const handles = handleObject.handles;
     const handles = followers;
 
     try {
@@ -53,7 +33,6 @@ export const run = async () => {
         handles,
         session,
         accountPDS,
-        conversations,
         proxyHeader
       );
     } catch (error) {
