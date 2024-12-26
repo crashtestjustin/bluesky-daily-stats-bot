@@ -25,9 +25,11 @@ export async function sendAccountPostSummary(
         accountPDS,
         session
       );
+
       //total up the posts engagement - likes, reposts, replies, number of posts
 
       const stats = {
+        totalPosts: 0,
         totalLike: 0,
         totalReposts: 0,
         totalReplies: 0,
@@ -36,6 +38,7 @@ export async function sendAccountPostSummary(
       };
 
       for (const post of userPosts) {
+        stats.totalPosts = userPosts.length;
         stats.totalLike += post.post.likeCount;
         stats.totalReplies += post.post.replyCount;
         stats.totalReposts += post.post.repostCount;
@@ -81,7 +84,13 @@ export async function sendAccountPostSummary(
   };
 
   const messageText = (stats, handle) => {
-    return `🙌 @${handle}, your personal post summary for today🙌\n\nEngagement with your content:\n\n${
+    return `🙌 @${handle}, your personal post summary for today🙌\n\nEngagement with your ${
+      stats.totalPosts > 0 ? `${stats.totalPosts} posts` : "content"
+    }:\n\n${
+      stats.totalPosts > 0
+        ? `    • Total Posts for the day: ${stats.totalPosts}`
+        : "    • No Posts today"
+    }\n${
       stats.totalLike > 0
         ? `    • Total post likes for the day: ${stats.totalLike}`
         : "    • No likes on posts today"
