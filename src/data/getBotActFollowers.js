@@ -1,4 +1,7 @@
 import { getConvoForMembers } from "./getConvoIDForMembers.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const getFollowers = async (accountPDS, session, actor) => {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -47,7 +50,8 @@ export const getFollowers = async (accountPDS, session, actor) => {
 
   const followers = await fetchFollowers(
     "app.bsky.graph.getFollowers",
-    "crashtestjustin.bsky.social"
+    // "crashtestjustin.bsky.social"
+    process.env.BLUESKY_USERNAME
   );
 
   // console.log(followers[0].followers);
