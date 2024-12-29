@@ -12,6 +12,7 @@ export async function sendAccountPostSummary(
     "mainAcct",
     "xmascountdown.bsky.social",
     "theyearprogress.bsky.social",
+    "crashtestjustin.bsky.social",
     "jde.blue",
   ];
   for (const handle of Object.keys(handles)) {
