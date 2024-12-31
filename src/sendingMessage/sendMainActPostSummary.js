@@ -38,12 +38,16 @@ export async function sendAccountPostSummary(
         totalRepostOthers: 0,
       };
 
+      stats.totalPosts = userPosts.length;
       for (const post of userPosts) {
-        stats.totalPosts = userPosts.length;
-        stats.totalLike += post.post.likeCount;
-        stats.totalReplies += post.post.replyCount;
-        stats.totalReposts += post.post.repostCount;
-        post.post.record.embed && (stats.totalRepostOthers += 1);
+        if (post.post.author.handle === handle) {
+          stats.totalLike += post.post.likeCount;
+          stats.totalReplies += post.post.replyCount;
+          stats.totalReposts += post.post.repostCount;
+        }
+        if (post.post.record.embed || post.post.author.handle !== handle) {
+          stats.totalRepostOthers += 1;
+        }
         post.post.record.reply && (stats.totalReplyOthers += 1);
       }
 
