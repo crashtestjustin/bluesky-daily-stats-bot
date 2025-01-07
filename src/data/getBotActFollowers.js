@@ -54,12 +54,13 @@ export const getFollowers = async (accountPDS, session, actor) => {
     process.env.BLUESKY_USERNAME
   );
 
-  // console.log(followers[0].followers);
-  // console.log(followers);
+  // console.log("ALL FOLLOWERS", followers[0]);
+  // console.log("MAIN ACCT", followers[0].followers);
 
   const followerHandles = {
     mainAcct: {
       handle: followers[0].subject.handle,
+      name: followers[0].subject.displayName,
       did: followers[0].subject.did,
     },
   };
@@ -74,6 +75,7 @@ export const getFollowers = async (accountPDS, session, actor) => {
 
     followerHandles[follower.handle] = {
       handle: follower.handle,
+      name: follower.displayName,
       did: follower.did,
       convoWithBotAcct: convo,
     };
