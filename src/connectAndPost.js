@@ -28,9 +28,16 @@ export const run = async () => {
     const followers = await getFollowers(accountPDS, session);
     const handles = followers;
 
+    // let testHandles = { "jde.blue": handles["jde.blue"] };
+
+    // console.log(testHandles);
+
+    //testing chsnges start
+
     try {
       const summaryMessage = await sendAccountPostSummary(
         handles,
+        // testHandles,
         session,
         accountPDS,
         proxyHeader
@@ -38,6 +45,8 @@ export const run = async () => {
     } catch (error) {
       console.log("Error sending the daily stats message", error);
     }
+
+    //testing chsnges end
 
     //START COMMENT OUT FEATURE THAT IS NOT NEEDED FOR MVP
     // //get follows and followers
