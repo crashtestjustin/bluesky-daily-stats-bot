@@ -1,3 +1,4 @@
+import { generateFriendlyname } from "../data/generateFriendlyName.js";
 import { fetchPosts } from "../data/getDailyPostStats.js";
 
 //function to get main post data for the day and send out a message that summarizes engagement
@@ -62,8 +63,6 @@ export async function sendAccountPostSummary(
   ) => {
     const text = await messageText(stats, handle, displayName);
 
-    // console.log(text);
-
     const url = "chat.bsky.convo.sendMessage";
 
     try {
@@ -95,7 +94,9 @@ export async function sendAccountPostSummary(
   };
 
   const messageText = (stats, handle, displayName) => {
-    return `🙌 ${handle}, your personal post summary for today 🙌\n\nEngagement with your ${
+    const friendlyName = generateFriendlyname(handle, displayName);
+
+    return `🙌 ${friendlyName}, your personal post summary for today 🙌\n\nEngagement with your ${
       stats.totalPosts > 0 ? `${stats.totalPosts} posts` : "content"
     }:\n\n${
       stats.totalPosts > 0
