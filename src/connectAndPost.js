@@ -31,6 +31,7 @@ export const run = async () => {
     // let testHandles = { "jde.blue": handles["jde.blue"] };
 
     // console.log(testHandles);
+    // console.log(followers);
 
     //testing chsnges start
 
