@@ -66,19 +66,28 @@ export const getFollowers = async (accountPDS, session, actor) => {
   };
 
   for (const follower of followers[0].followers) {
-    const convo = await getConvoForMembers(
-      accountPDS,
-      session,
-      follower.did,
-      followers[0].subject.did
-    );
+    if (
+      follower.associated &&
+      follower.associated.chat.allowIncoming === "none"
+    ) {
+      console.log(
+        `${follower.handle} does not accdept incoming chat messages. Skipping them`
+      );
+    } else {
+      const convo = await getConvoForMembers(
+        accountPDS,
+        session,
+        follower.did,
+        followers[0].subject.did
+      );
 
-    followerHandles[follower.handle] = {
-      handle: follower.handle,
-      name: follower.displayName,
-      did: follower.did,
-      convoWithBotAcct: convo,
-    };
+      followerHandles[follower.handle] = {
+        handle: follower.handle,
+        name: follower.displayName,
+        did: follower.did,
+        convoWithBotAcct: convo,
+      };
+    }
   }
 
   return followerHandles;
