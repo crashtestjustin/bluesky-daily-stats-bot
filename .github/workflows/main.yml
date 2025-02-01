@@ -3,7 +3,8 @@ name: Daily Post Stats Updates
 on:
   schedule:
     # Runs at 11:59pm UTC
-    - cron: "59 23 * * *"
+    #- cron: "59 23 * * *" #to delete
+    - cron: "30 23 * * *" #moving up to 11:30pm UTC to account for the longer processing time it needs with all the followers
   workflow_dispatch:
 
 jobs:
