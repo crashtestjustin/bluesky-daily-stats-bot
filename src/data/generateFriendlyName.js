@@ -11,8 +11,8 @@ export function generateFriendlyname(handle, displayName) {
 
   // Split name into words
   const words = primaryName.split(/\s+/);
-  console.log(primaryName);
-  console.log(words);
+  // console.log(primaryName);
+  // console.log(words);
 
   let friendlyName;
 
