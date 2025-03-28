@@ -8,13 +8,14 @@ export const getFollowers = async (accountPDS, session, actor) => {
 
   const fetchFollowers = async (url, actor) => {
     let followers = [];
-    let cursor = null;
+    let cursor = undefined;
+    let subject = undefined; // Store the main account's data
 
     do {
       try {
         const params = new URLSearchParams({
           actor: actor,
-          limit: "100",
+          limit: "50",
           ...(cursor && { cursor }),
         });
 
@@ -35,8 +36,13 @@ export const getFollowers = async (accountPDS, session, actor) => {
 
         const data = await response.json();
 
-        followers.push(data);
-        cursor = data.cursor || null;
+        if (!subject) {
+          subject = data.subject; // Save main account info from the first response
+        }
+
+        // followers.push(data);
+        followers = [...followers, ...data.followers];
+        cursor = data.cursor || undefined;
 
         await delay(500); // Add delay to avoid rate limits
       } catch (error) {
@@ -45,27 +51,25 @@ export const getFollowers = async (accountPDS, session, actor) => {
       }
     } while (cursor);
 
-    return followers;
+    // return followers;
+    return { followers, subject }; // Return both followers and subject
   };
 
-  const followers = await fetchFollowers(
+  const { followers, subject } = await fetchFollowers(
     "app.bsky.graph.getFollowers",
     // "crashtestjustin.bsky.social"
     process.env.BLUESKY_USERNAME
   );
 
-  // console.log("ALL FOLLOWERS", followers[0]);
-  // console.log("MAIN ACCT", followers[0].followers);
-
   const followerHandles = {
     mainAcct: {
-      handle: followers[0].subject.handle,
-      name: followers[0].subject.displayName,
-      did: followers[0].subject.did,
+      handle: subject.handle,
+      name: subject.displayName,
+      did: subject.did,
     },
   };
 
-  for (const follower of followers[0].followers) {
+  for (const follower of followers) {
     if (
       follower.associated &&
       follower.associated.chat.allowIncoming === "none"
@@ -78,7 +82,7 @@ export const getFollowers = async (accountPDS, session, actor) => {
         accountPDS,
         session,
         follower.did,
-        followers[0].subject.did
+        subject.did
       );
 
       followerHandles[follower.handle] = {
