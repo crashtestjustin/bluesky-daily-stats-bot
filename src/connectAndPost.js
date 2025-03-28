@@ -31,6 +31,11 @@ export const run = async () => {
     // let testHandles = { "jde.blue": handles["jde.blue"] };
 
     // console.log(testHandles);
+    // let count = 0;
+    // for (const follower of Object.keys(followers)) {
+    //   count++;
+    // }
+    // console.log("COUNT: ", count);
     // console.log(followers);
 
     //testing chsnges start
