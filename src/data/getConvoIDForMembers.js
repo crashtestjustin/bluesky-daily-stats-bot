@@ -8,43 +8,34 @@ export const getConvoForMembers = async (
 
   const fetchData = async (url, membersArray) => {
     let data = [];
-    let cursor = null;
 
-    do {
-      try {
-        const params = new URLSearchParams();
-        membersArray.forEach((member) => params.append("members", member));
+    try {
+      const params = new URLSearchParams();
+      membersArray.forEach((member) => params.append("members", member));
 
-        const response = await fetch(`${accountPDS}/xrpc/${url}?${params}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${session.accessJwt}`,
-            "Content-Type": "application/json",
-            "Atproto-Proxy": "did:web:api.bsky.chat#bsky_chat",
-          },
-        });
+      const response = await fetch(`${accountPDS}/xrpc/${url}?${params}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session.accessJwt}`,
+          "Content-Type": "application/json",
+          "Atproto-Proxy": "did:web:api.bsky.chat#bsky_chat",
+        },
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Error Response Data:", errorData);
-          throw new Error(
-            `Error fetching ${url}: ${response.status} - ${errorData?.error}`
-          );
-        }
-
-        const responseData = await response.json();
-
-        data.push(responseData);
-        cursor = data.cursor || null;
-
-        await delay(500); // Add delay to avoid rate limits
-      } catch (error) {
-        console.error(`Failed to fetch data: ${error.message}`);
-        break; // Exit loop on failure
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error Response Data:", errorData);
+        throw new Error(
+          `Error fetching ${url}: ${response.status} - ${errorData?.error}`
+        );
       }
-    } while (cursor);
 
-    return data;
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error(`Failed to fetch data: ${error.message}`);
+      return null;
+    }
   };
 
   const membersArray = [recipientDid, botDid];
@@ -53,5 +44,5 @@ export const getConvoForMembers = async (
     membersArray
   );
 
-  return convo[0].convo;
+  return convo.convo;
 };
